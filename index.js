@@ -1,7 +1,4 @@
-//onload function
-function onload() {
-    update();
-}
+
  // All DOM elements
 let speech = new SpeechSynthesisUtterance();
 let buttonEl = document.getElementById("btn");
@@ -13,34 +10,36 @@ let voices = [];
 let i = 0;
 
 //it will work on load once .
-function update() {
+let updateVoices=()=> {
     //to get all voices which are there in system.
     voices = window.speechSynthesis.getVoices();
     //set default voice
     speech.voice = voices[0];
 
-    voices.forEach((voice) => {
+    selectEl.innerHTML = "";
+    voices.forEach((voice,index) => {
         let option = document.createElement("option");
-        option.textContent = `${voice.name} ${voice.lang} ${i}`;
-        i++;
+        option.textContent = `${voice.name} ${voice.lang}`;
+        option.value = index;
         selectEl.appendChild(option);
 
     })
 }
-//calling on load function.
-onload();
+
+// Attempt to populate voices immediately on page load
+updateVoices();
+
+// Load the voices when they are ready (if not already loaded)
+window.speechSynthesis.onvoiceschanged = () => {
+    updateVoices();
+};
+
 
 //on changing option in select it will work.
 selectEl.addEventListener('change', () => {
-
-    //to find index .So we can give it voice array
-    let len = selectEl.value.length;
-    let index = selectEl.value.slice(len - 1);
-    console.log(index);
-
+    // console.log(selectEl.value)
+    let index=selectEl.value
     speech.voice = voices[index];
-
-
 })
 
 
